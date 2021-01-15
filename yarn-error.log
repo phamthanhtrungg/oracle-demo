@@ -1,0 +1,36 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\ASUS\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js init -t
+
+PATH: 
+  C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\ASUS\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Program Files\Java\jdk-12.0.2\bin;D:\Downloads\Compressed\WINDOWS.X64_193000_db_home\bin;D:\WINDOWS.X64_193000_db_home\bin;C:\Users\ASUS\Desktop\WINDOWS.X64_193000_db_home_2\bin;C:\Python39\Scripts;C:\Python39;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\ProgramData\chocolatey\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn;C:\Program Files\Git LFS;C:\Program Files\dotnet;C:\Program Files (x86)\dotnet;D:\Program Files\Microsoft VS Code Insiders\bin;C:\Go\bin;C:\Program Files\Git\cmd;C:\Program Files\nodejs;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;D:\TDM-GCC-64\bin;C:\Users\ASUS\AppData\Local\Android\Sdk\platform-tools;C:\Users\ASUS\.dotnet\tools;C:\Program Files\heroku\bin;C:\Users\ASUS\go\bin;D:\Program Files\JetBrains\WebStorm 2020.3\bin;C:\Users\ASUS\AppData\Local\Android\Sdk\platform-tools;C:\Program Files\Azure Data Studio\bin;C:\Users\ASUS\go\bin;C:\Users\ASUS\AppData\Roaming\npm
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  12.4.0
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: canceled
+      at Interface.<anonymous> (C:\Users\ASUS\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:136216:13)
+      at Interface.emit (events.js:200:13)
+      at Interface._ttyWrite (readline.js:877:16)
+      at ReadStream.onkeypress (readline.js:189:10)
+      at ReadStream.emit (events.js:200:13)
+      at emitKeys (internal/readline.js:424:14)
+      at emitKeys.next (<anonymous>)
+      at ReadStream.onData (readline.js:1145:36)
+      at ReadStream.emit (events.js:200:13)
+      at addChunk (_stream_readable.js:294:12)
+
+npm manifest: 
+  No manifest
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
