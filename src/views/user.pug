@@ -1,0 +1,39 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Users
+    body 
+        h1 All users
+
+        button.createBtn Create new user
+
+        table 
+            tr
+            - for (let i=0;i < tableHeaders.length; i++)
+                th=tableHeaders[i]
+            - for (let i = 0; i < users.length; i++)
+              tr  
+                - for (let j = 0; j < users[i].length; j++)
+                    td=users[i][j]
+                
+                td 
+                    a(href="#") View roles  
+                td 
+                    a(href="#") View Privileges
+                td 
+                    a(href="#") Edit 
+
+        style(type='text/css').
+            table{
+                width: 100%;
+            }
+            table, th, td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            .createBtn{
+                margin-bottom: 10px;
+            }

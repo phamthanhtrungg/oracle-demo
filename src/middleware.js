@@ -9,7 +9,6 @@ function checkUserPrivileges(expectedPriv = false, location = "/") {
   return function (req, res, next) {
     const currentState =
       req.session.user != undefined && req.cookies.my_cookie != undefined;
-    console.log(currentState);
     if (expectedPriv !== currentState) {
       return res.redirect(location);
     }
@@ -17,4 +16,11 @@ function checkUserPrivileges(expectedPriv = false, location = "/") {
   };
 }
 
-export { checkCookie, checkUserPrivileges };
+function CustomErrorMiddleware(err, req, res, next) {
+  if (err) {
+    res.status(500).send(err.message);
+  }
+  next();
+}
+
+export { checkCookie, checkUserPrivileges, CustomErrorMiddleware };
