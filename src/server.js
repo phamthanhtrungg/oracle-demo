@@ -11,6 +11,7 @@ import {
   getUserRolesHandler,
   getUserPrivilegesHandler,
   getPrivilegePageHandler,
+  getUserByPrivilegeHandler,
 } from "./handler";
 import {
   checkCookie,
@@ -48,6 +49,7 @@ app.get("/home/privileges", getPrivilegePageHandler);
 app.get("/home/users", getUserHandler);
 app.get("/users/:username/roles", getUserRolesHandler);
 app.get("/users/:username/privileges", getUserPrivilegesHandler);
+app.get("/privileges/:privilege/users", getUserByPrivilegeHandler);
 
 app.use(CustomErrorMiddleware);
 

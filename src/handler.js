@@ -110,6 +110,22 @@ async function getUserPrivilegesHandler(req, res, next) {
   }
 }
 
+async function getUserByPrivilegeHandler(req, res, next) {
+  try {
+    const privilege = req.params.privilege;
+    const usernames = await connection.execute(
+      `
+    SELECT GRANTEE
+    FROM DBA_SYS_PRIVS 
+    WHERE PRIVILEGE = :privilege
+    `,
+      [privilege]
+    );
+    return res.render("list.pug", { arr: usernames.rows, title: "User" });
+  } catch (error) {
+    next(error);
+  }
+}
 export {
   getUserHandler,
   getHomeHandler,
@@ -118,4 +134,5 @@ export {
   getUserRolesHandler,
   getUserPrivilegesHandler,
   getPrivilegePageHandler,
+  getUserByPrivilegeHandler,
 };

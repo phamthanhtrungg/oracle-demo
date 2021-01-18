@@ -7,8 +7,8 @@ html(lang="en")
 		include scripts.pug
 		title Privileges
 	body 
-		h1.text-4xl.text-center Privileges
-
+		a(href="/home/privileges").block.text-4xl.text-center Privileges
+		div(id="modal" class="modal")
 		form(action="/home/privileges" method="GET" id="form-select-page")
 			input(name="page" value="0" hidden)
 			label
@@ -32,3 +32,11 @@ html(lang="en")
 		.mt-5.flex.justify-center 
 			- for (let i = 0;i < Math.round(total / limit);i++)
 				a(href=`/home/privileges?page=${i}&limit=${limit}` class="text-blue-600 hover:underline mx-2")=i
+
+		script(type="text/javascript").
+			$(function(){
+				$(".user-by-privilege").click(function (e) {
+					const privilege = ($(this).attr("privilege"))
+					loadHtml(`/privileges/${privilege}/users`, $("#modal"))	})
+			})
+			
