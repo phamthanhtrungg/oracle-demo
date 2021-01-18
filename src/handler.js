@@ -5,7 +5,7 @@ import {
   GET_USERS_QUERY,
   USERS_TABLE_HEADER,
   GET_USER_ROLES,
-  GET_USER_PRIVILEGE,
+  GET_USER_PRIVILEGES,
 } from "./constant";
 
 let connection;
@@ -59,9 +59,23 @@ async function getUserHandler(_, res, next) {
 async function getUserRoles(req, res, next) {
   try {
     const username = req.params.username;
-    console.log(username);
     const roles = await connection.execute(GET_USER_ROLES, [username]);
-    return res.render("list.pug", { arr: roles.rows });
+    return res.render("list.pug", { arr: roles.rows, title: "Roles" });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getUserPrivileges(req, res, next) {
+  try {
+    const username = req.params.username;
+    const privileges = await connection.execute(GET_USER_PRIVILEGES, [
+      username,
+    ]);
+    return res.render("list.pug", {
+      arr: privileges.rows,
+      title: "Privileges",
+    });
   } catch (err) {
     next(err);
   }
@@ -73,4 +87,5 @@ export {
   postHomeHandler,
   getHomePageHandler,
   getUserRoles,
+  getUserPrivileges,
 };
