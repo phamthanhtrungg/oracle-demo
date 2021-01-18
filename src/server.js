@@ -8,8 +8,9 @@ import {
   getHomePageHandler,
   getUserHandler,
   postHomeHandler,
-  getUserRoles,
-  getUserPrivileges,
+  getUserRolesHandler,
+  getUserPrivilegesHandler,
+  getPrivilegePageHandler,
 } from "./handler";
 import {
   checkCookie,
@@ -20,6 +21,7 @@ import {
 const app = express();
 const PORT = 3000;
 
+app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -42,9 +44,10 @@ app
   .get(checkUserPrivileges(false, "/home"), getHomeHandler)
   .post(postHomeHandler);
 app.get("/home", getHomePageHandler);
+app.get("/home/privileges", getPrivilegePageHandler);
 app.get("/home/users", getUserHandler);
-app.get("/users/:username/roles", getUserRoles);
-app.get("/users/:username/privileges", getUserPrivileges);
+app.get("/users/:username/roles", getUserRolesHandler);
+app.get("/users/:username/privileges", getUserPrivilegesHandler);
 
 app.use(CustomErrorMiddleware);
 

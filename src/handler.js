@@ -6,6 +6,7 @@ import {
   USERS_TABLE_HEADER,
   GET_USER_ROLES,
   GET_USER_PRIVILEGES,
+  GET_ALL_PRIVILEGES,
 } from "./constant";
 
 let connection;
@@ -38,6 +39,34 @@ function getHomePageHandler(_, res) {
   return res.render("home.pug");
 }
 
+async function getPrivilegePageHandler(req, res, next) {
+  try {
+    const page = req.query.page ?? 0;
+    const limit = req.query.limit ?? 10;
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+    const privileges = await connection.execute(
+      `
+    SELECT DISTINCT PRIVILEGE, TOTAL
+    FROM DBA_SYS_PRIVS, (SELECT COUNT(DISTINCT PRIVILEGE) TOTAL FROM DBA_SYS_PRIVS)
+    ORDER BY PRIVILEGE ASC
+    OFFSET ${page * limit} ROWS FETCH NEXT ${limit} ROWS ONLY
+      `
+    );
+    return res.render("privilege.pug", {
+      privileges: privileges.rows,
+      limit,
+      page,
+      total: privileges.rows[0][1],
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function getUserHandler(_, res, next) {
   try {
     connection = await oracledb.getConnection({
@@ -56,7 +85,7 @@ async function getUserHandler(_, res, next) {
   }
 }
 
-async function getUserRoles(req, res, next) {
+async function getUserRolesHandler(req, res, next) {
   try {
     const username = req.params.username;
     const roles = await connection.execute(GET_USER_ROLES, [username]);
@@ -66,7 +95,7 @@ async function getUserRoles(req, res, next) {
   }
 }
 
-async function getUserPrivileges(req, res, next) {
+async function getUserPrivilegesHandler(req, res, next) {
   try {
     const username = req.params.username;
     const privileges = await connection.execute(GET_USER_PRIVILEGES, [
@@ -86,6 +115,7 @@ export {
   getHomeHandler,
   postHomeHandler,
   getHomePageHandler,
-  getUserRoles,
-  getUserPrivileges,
+  getUserRolesHandler,
+  getUserPrivilegesHandler,
+  getPrivilegePageHandler,
 };
