@@ -16,7 +16,7 @@ function checkUserPrivileges(expectedPriv = false, location = "/") {
   };
 }
 
-function CustomErrorMiddleware(err, req, res, next) {
+function CustomErrorMiddleware(err, _, res, next) {
   if (err) {
     res.status(500).send(err.message);
   }

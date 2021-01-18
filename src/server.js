@@ -8,6 +8,7 @@ import {
   getHomePageHandler,
   getUserHandler,
   postHomeHandler,
+  getUserRoles,
 } from "./handler";
 import {
   checkCookie,
@@ -41,6 +42,7 @@ app
   .post(postHomeHandler);
 app.get("/home", getHomePageHandler);
 app.get("/home/users", getUserHandler);
+app.get("/users/:username/roles", getUserRoles);
 
 app.use(CustomErrorMiddleware);
 

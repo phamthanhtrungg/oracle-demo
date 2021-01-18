@@ -4,6 +4,8 @@ import {
   GET_CURRENT_USER_QUERY,
   GET_USERS_QUERY,
   USERS_TABLE_HEADER,
+  GET_USER_ROLES,
+  GET_USER_PRIVILEGE,
 } from "./constant";
 
 let connection;
@@ -38,6 +40,11 @@ function getHomePageHandler(_, res) {
 
 async function getUserHandler(_, res, next) {
   try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
     const query = await connection.execute(GET_USERS_QUERY);
 
     return res.render("user.pug", {
@@ -49,4 +56,21 @@ async function getUserHandler(_, res, next) {
   }
 }
 
-export { getUserHandler, getHomeHandler, postHomeHandler, getHomePageHandler };
+async function getUserRoles(req, res, next) {
+  try {
+    const username = req.params.username;
+    console.log(username);
+    const roles = await connection.execute(GET_USER_ROLES, [username]);
+    return res.render("list.pug", { arr: roles.rows });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export {
+  getUserHandler,
+  getHomeHandler,
+  postHomeHandler,
+  getHomePageHandler,
+  getUserRoles,
+};

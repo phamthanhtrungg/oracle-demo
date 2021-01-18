@@ -4,15 +4,16 @@ html(lang="en")
         meta(charset="UTF-8")
         meta(http-equiv="X-UA-Compatible", content="IE=edge")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        include scripts.pug
         title Users
     body 
         h1 All users
 
-        button.createBtn Create new user
+        button Create new user
 
-        table 
+        table
             tr
-            - for (let i=0;i < tableHeaders.length; i++)
+            - for (let i = 0; i < tableHeaders.length; i++)
                 th=tableHeaders[i]
             - for (let i = 0; i < users.length; i++)
               tr  
@@ -20,12 +21,12 @@ html(lang="en")
                     td=users[i][j]
                 
                 td 
-                    a(href="#") View roles  
+                    a(href="#" class="view-roles" username=users[i][0]) View roles  
                 td 
                     a(href="#") View Privileges
                 td 
                     a(href="#") Edit 
-
+        div(id="modal" class="modal")
         style(type='text/css').
             table{
                 width: 100%;
@@ -37,3 +38,10 @@ html(lang="en")
             .createBtn{
                 margin-bottom: 10px;
             }
+        script(type="text/javascript").
+            $(function(){
+                $(".view-roles").click(function (e){
+                   const username = ($(this).attr("username"))
+                   loadHtml(`/users/${username}/roles`, $("#modal"))
+                })
+            })

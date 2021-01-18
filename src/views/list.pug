@@ -1,0 +1,8 @@
+.modal
+	if arr.length > 0
+		h1.is-size-4.has-text-centered Roles
+		ul.content
+		- for (let i = 0; i< arr.length; ++i)
+			li=arr[i][0]
+	else
+		p No roles
