@@ -4,12 +4,14 @@ import { useCallback, useState, useEffect } from "react";
 import ReactModal from "react-modal";
 import { API_ROUTES, getRequest } from "../../api";
 import Pagination from "../pagination";
+import PrivByRole from "./modal/PrivByRole";
 import UserByRole from "./modal/UserByRole";
 
 function Role() {
   const [isFetching, setIsFetching] = useState(true);
   const [data, setData] = useState({ rows: [], size: 10, page: 0 });
   const [selectedRole, setSelectedRole] = useState("");
+  const [key, setKey] = useState(0);
 
   const fetchRoles = useCallback(async (page = 0) => {
     const res = await getRequest(`${API_ROUTES.ROLES.ALL}?page=${page}`);
@@ -41,10 +43,17 @@ function Role() {
     <>
       <ReactModal
         appElement={document.getElementById("root")}
-        isOpen={selectedRole !== ""}
+        isOpen={selectedRole !== "" && key === 1}
         onRequestClose={onClearRoleClick}
       >
         <UserByRole role={selectedRole} />
+      </ReactModal>
+      <ReactModal
+        appElement={document.getElementById("root")}
+        isOpen={selectedRole !== "" && key === 2}
+        onRequestClose={onClearRoleClick}
+      >
+        <PrivByRole role={selectedRole} />
       </ReactModal>
       <h1 className="text-4xl text-center">Roles</h1>
       <table className="table border-collapse w-full my-5">
@@ -52,6 +61,7 @@ function Role() {
           <tr>
             <th className="border">Roles</th>
             <th className="border">User in this role</th>
+            <th className="border">Privilege of this role</th>
           </tr>
         </thead>
         <tbody>
@@ -62,9 +72,24 @@ function Role() {
                 <a
                   href="#"
                   className="text-blue-500 hover:underline text-center block"
-                  onClick={(e) => onSelectRole(e, row)}
+                  onClick={(e) => {
+                    onSelectRole(e, row);
+                    setKey(1);
+                  }}
                 >
                   View users
+                </a>
+              </td>
+              <td className="border">
+                <a
+                  href="#"
+                  className="text-blue-500 hover:underline text-center block"
+                  onClick={(e) => {
+                    onSelectRole(e, row);
+                    setKey(2);
+                  }}
+                >
+                  View privileges
                 </a>
               </td>
             </tr>

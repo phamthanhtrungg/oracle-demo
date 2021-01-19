@@ -183,10 +183,55 @@ async function getUserByRoleHandler(req, res, next) {
   }
 }
 
+async function getPrivsByRoleHandler(req, res, next) {
+  const page = req.query.page || 0;
+  const size = req.query.size || 10;
+  const role = req.params.role;
+  if (!role) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide role" });
+  }
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+    const [roles, counts] = await Promise.all([
+      connection.execute(
+        `
+      SELECT PRIVILEGE
+      FROM DBA_SYS_PRIVS
+      WHERE GRANTEE = '${role}'  
+      ORDER BY PRIVILEGE ASC
+      OFFSET ${size * page} ROWS FETCH NEXT ${size} ROWS ONLY
+      `
+      ),
+      connection.execute(
+        `SELECT COUNT(*) FROM DBA_SYS_PRIVS WHERE GRANTEE = '${role}'`
+      ),
+    ]);
+
+    return res.json({
+      success: true,
+      data: {
+        rows: roles.rows,
+        total: counts.rows > 0 ? counts.rows[0][0] : 0,
+        page,
+        size,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export {
   getPrivilegesHandler,
   getUsersByPriv,
   revokePrivilegeHandler,
   getRolesHandler,
   getUserByRoleHandler,
+  getPrivsByRoleHandler,
 };

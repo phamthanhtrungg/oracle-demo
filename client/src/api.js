@@ -15,6 +15,7 @@ const API_ROUTES = {
   ROLES: {
     ALL: "/roles",
     USERS: "/roles/:role/users",
+    PRIVS: "/roles/:role/privs",
     REVOKE: "/roles/revoke",
   },
 };
