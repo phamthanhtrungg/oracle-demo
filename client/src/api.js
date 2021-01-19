@@ -10,6 +10,7 @@ const API_ROUTES = {
   PRIVILEGES: {
     ALL: "/privileges",
     USERS: "/privileges/:priv/users",
+    REVOKE: "/privilege/revoke",
   },
 };
 
@@ -22,4 +23,13 @@ async function getRequest(targetUrl) {
   }
 }
 
-export { getRequest, API_ROUTES };
+async function postRequest(targetUrl, data) {
+  try {
+    const res = await instance.post(targetUrl, data);
+    return res.data;
+  } catch (err) {
+    return err?.response?.data;
+  }
+}
+
+export { getRequest, postRequest, API_ROUTES };

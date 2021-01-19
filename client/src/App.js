@@ -1,8 +1,13 @@
-import { Route, Switch } from "react-router-dom";
+import { NotificationContainer } from "react-notifications";
 import Privilege from "./components/privilege";
 
 function App() {
-  return <Privilege />;
+  return (
+    <>
+      <Privilege />
+      <NotificationContainer />
+    </>
+  );
 }
 
 export default App;

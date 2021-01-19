@@ -19,7 +19,7 @@ function checkUserPrivileges(expectedPriv = false, location = "/") {
 function CustomErrorMiddleware(err, _, res, next) {
   if (err) {
     res.status(500).json({
-      error: err.message,
+      message: err.message,
       success: false,
     });
   }

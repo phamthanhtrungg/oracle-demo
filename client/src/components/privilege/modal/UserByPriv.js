@@ -1,7 +1,37 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useState } from "react";
-import { API_ROUTES, getRequest } from "../../../api";
+import { NotificationManager } from "react-notifications";
+import { API_ROUTES, getRequest, postRequest } from "../../../api";
 import Pagination from "../../pagination";
+
+function Row({ priv, username, fetchUsersByPriv }) {
+  const [revoking, setRevoking] = useState(false);
+  const onRevokeClick = useCallback(async () => {
+    setRevoking(true);
+    const res = await postRequest(API_ROUTES.PRIVILEGES.REVOKE, {
+      priv,
+      username,
+    });
+    if (!res.success) {
+      NotificationManager.error(res.message);
+    } else {
+      fetchUsersByPriv();
+      NotificationManager.success("Success");
+    }
+    setRevoking(false);
+  }, []);
+  return (
+    <li key={username} className="flex justify-between">
+      <span> {username}</span>
+      <span
+        className="text-red-500 cursor-pointer hover:underline"
+        onClick={onRevokeClick}
+      >
+        {revoking ? "revoking..." : "Revoke"}
+      </span>
+    </li>
+  );
+}
 
 function UserByPriv({ priv }) {
   const [data, setData] = useState({ rows: [], page: 0, size: 10, total: 0 });
@@ -21,6 +51,7 @@ function UserByPriv({ priv }) {
     },
     [priv]
   );
+
   useEffect(() => {
     fetchUsersByPriv();
     return () => {};
@@ -31,19 +62,19 @@ function UserByPriv({ priv }) {
       <p className="text-2xl text-center">Fetching data, please wait...</p>
     );
   }
-  console.log(data);
+
   return (
     <>
       <h2 className="text-2xl text-center">Users</h2>
       <ul>
         {data.rows.length > 0 ? (
           data.rows.map((row) => (
-            <li key={row[0]} className="flex justify-between">
-              <span> {row[0]}</span>
-              <span className="text-red-500 cursor-pointer hover:underline">
-                Revoke
-              </span>
-            </li>
+            <Row
+              key={row[0]}
+              username={row[0]}
+              priv={priv}
+              fetchUsersByPriv={fetchUsersByPriv}
+            />
           ))
         ) : (
           <p className="text-xl center">No users in this privilege</p>

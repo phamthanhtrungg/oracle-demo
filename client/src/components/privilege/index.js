@@ -38,8 +38,9 @@ function Privilege() {
     );
   }
   return (
-    <div>
+    <>
       <ReactModal
+        appElement={document.getElementById("root")}
         isOpen={selectedPrivilege !== ""}
         onRequestClose={onClearPriv}
       >
@@ -76,7 +77,7 @@ function Privilege() {
         page={data.page}
         onPageClick={fetchPrivileges}
       />
-    </div>
+    </>
   );
 }
 

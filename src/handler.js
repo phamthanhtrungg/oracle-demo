@@ -82,4 +82,32 @@ async function getUsersByPriv(req, res, next) {
   }
 }
 
-export { getPrivilegesHandler, getUsersByPriv };
+async function revokePrivilegeHandler(req, res, next) {
+  const username = req.body.username;
+  const priv = req.body.priv;
+  if (!username) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide username" });
+  }
+  if (!priv) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide priv" });
+  }
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+    await connection.execute(`REVOKE ${priv} FROM ${username}`);
+    return res.json({
+      success: true,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export { getPrivilegesHandler, getUsersByPriv, revokePrivilegeHandler };
