@@ -1,7 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import { getPrivilegesHandler } from "./handler";
+import { getPrivilegesHandler, getUsersByPriv } from "./handler";
 import { CustomErrorMiddleware } from "./middleware";
 
 const app = express();
@@ -14,6 +14,7 @@ app.use(
 );
 
 app.get("/api/privileges", getPrivilegesHandler);
+app.get("/api/privileges/:priv/users", getUsersByPriv);
 
 app.use(CustomErrorMiddleware);
 

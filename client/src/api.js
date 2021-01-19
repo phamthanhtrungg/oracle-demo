@@ -9,13 +9,13 @@ const instance = axios.create({
 const API_ROUTES = {
   PRIVILEGES: {
     ALL: "/privileges",
+    USERS: "/privileges/:priv/users",
   },
 };
 
 async function getRequest(targetUrl) {
   try {
     const res = await instance.get(targetUrl);
-    console.log(res);
     return res.data;
   } catch (err) {
     return err?.response?.data;

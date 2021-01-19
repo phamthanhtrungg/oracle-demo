@@ -44,4 +44,42 @@ async function getPrivilegesHandler(req, res, next) {
   }
 }
 
-export { getPrivilegesHandler };
+async function getUsersByPriv(req, res, next) {
+  const page = req.query.page || 0;
+  const size = req.query.size || 10;
+  const priv = req.params.priv;
+  if (!priv) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide privilege" });
+  }
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+    const users = await connection.execute(
+      `
+        SELECT GRANTEE, COUNT
+        FROM DBA_SYS_PRIVS, (SELECT COUNT(*) as COUNT FROM DBA_SYS_PRIVS WHERE PRIVILEGE = '${priv}') 
+        WHERE PRIVILEGE = '${priv}'
+        OFFSET ${size * page} ROWS FETCH NEXT ${size} ROWS ONLY
+       `
+    );
+
+    return res.json({
+      success: true,
+      data: {
+        rows: users.rows,
+        total: users.rows > 0 ? users.rows[0][0] : 0,
+        page,
+        size,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export { getPrivilegesHandler, getUsersByPriv };
