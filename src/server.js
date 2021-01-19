@@ -5,6 +5,8 @@ import {
   getPrivilegesHandler,
   getUsersByPriv,
   revokePrivilegeHandler,
+  getRolesHandler,
+  getUserByRoleHandler,
 } from "./handler";
 import { CustomErrorMiddleware } from "./middleware";
 
@@ -20,6 +22,8 @@ app.use(
 app.get("/api/privileges", getPrivilegesHandler);
 app.get("/api/privileges/:priv/users", getUsersByPriv);
 app.post("/api/privilege/revoke", revokePrivilegeHandler);
+app.get("/api/roles", getRolesHandler);
+app.get("/api/roles/:role/users", getUserByRoleHandler);
 
 app.use(CustomErrorMiddleware);
 

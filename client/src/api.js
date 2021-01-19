@@ -12,6 +12,11 @@ const API_ROUTES = {
     USERS: "/privileges/:priv/users",
     REVOKE: "/privilege/revoke",
   },
+  ROLES: {
+    ALL: "/roles",
+    USERS: "/roles/:role/users",
+    REVOKE: "/roles/revoke",
+  },
 };
 
 async function getRequest(targetUrl) {
