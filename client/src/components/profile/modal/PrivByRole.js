@@ -87,7 +87,7 @@ function PrivByRole({ profile }) {
           </tbody>
         </table>
       ) : (
-        <p className="text-xl center">No privileges in this profile</p>
+        <p className="text-xl center">No resources in this profile</p>
       )}
 
       <Pagination
