@@ -14,6 +14,7 @@ const API_ROUTES = {
   },
   ROLES: {
     ALL: "/roles",
+    DROP: "/roles/:role",
     USERS: "/roles/:role/users",
     PRIVS: "/roles/:role/privs",
     REVOKE: "/roles/revoke",
@@ -37,5 +38,21 @@ async function postRequest(targetUrl, data) {
     return err?.response?.data;
   }
 }
+async function deleteRequest(targetUrl) {
+  try {
+    const res = await instance.delete(targetUrl);
+    return res.data;
+  } catch (err) {
+    return err?.response?.data;
+  }
+}
 
-export { getRequest, postRequest, API_ROUTES };
+async function putRequest(targetUrl, data) {
+  try {
+    const res = await instance.put(targetUrl, data);
+    return res.data;
+  } catch (err) {
+    return err?.response?.data;
+  }
+}
+export { getRequest, postRequest, deleteRequest, putRequest, API_ROUTES };

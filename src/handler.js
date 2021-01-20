@@ -123,7 +123,8 @@ async function getRolesHandler(req, res, next) {
     const [roles, counts] = await Promise.all([
       connection.execute(
         `
-      SELECT ROLE FROM DBA_ROLES
+      SELECT ROLE, PASSWORD_REQUIRED
+      FROM DBA_ROLES
       ORDER BY ROLE ASC
       OFFSET ${size * page} ROWS FETCH NEXT ${size} ROWS ONLY
       `
@@ -227,6 +228,57 @@ async function getPrivsByRoleHandler(req, res, next) {
   }
 }
 
+async function dropRoleHandler(req, res, next) {
+  const role = req.params.role;
+  if (!role) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide role" });
+  }
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+    await connection.execute(` DROP ROLE ${role} `);
+
+    return res.json({
+      success: true,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function editRoleHandler(req, res, next) {
+  const role = req.params.role;
+  const hasPwd = req.body.hasPwd !== undefined ? req.body.hasPwd : false;
+  const pwd = req.body.pwd ?? "";
+  if (!role) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide role" });
+  }
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+    let query = `ALTER ROLE ${role} NOT IDENTIFIED`;
+    if (hasPwd) {
+      query = `ALTER ROLE ${role} IDENTIFIED BY ${pwd}`;
+    }
+    await connection.execute(query);
+    return res.json({
+      success: true,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export {
   getPrivilegesHandler,
   getUsersByPriv,
@@ -234,4 +286,6 @@ export {
   getRolesHandler,
   getUserByRoleHandler,
   getPrivsByRoleHandler,
+  dropRoleHandler,
+  editRoleHandler,
 };

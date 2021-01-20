@@ -9,7 +9,7 @@ function Row({ role, username, fetchUserByRole }) {
   const onRevokeClick = useCallback(async () => {
     setRevoking(true);
     const res = await postRequest(API_ROUTES.PRIVILEGES.REVOKE, {
-      role,
+      priv: role,
       username,
     });
     if (!res.success) {

@@ -23,12 +23,12 @@ function Row({ role, username, fetchPrivByRole }) {
   return (
     <li key={username} className="flex justify-between">
       <span> {username}</span>
-      <span
+      {/* <span
         className="text-red-500 cursor-pointer hover:underline"
         onClick={onRevokeClick}
       >
         {revoking ? "revoking..." : "Revoke"}
-      </span>
+      </span> */}
     </li>
   );
 }

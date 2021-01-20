@@ -2,8 +2,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useState, useEffect } from "react";
 import ReactModal from "react-modal";
-import { API_ROUTES, getRequest } from "../../api";
+import { NotificationManager } from "react-notifications";
+import { API_ROUTES, deleteRequest, getRequest, putRequest } from "../../api";
 import Pagination from "../pagination";
+import EditRole from "./modal/EditRole";
 import PrivByRole from "./modal/PrivByRole";
 import UserByRole from "./modal/UserByRole";
 
@@ -11,6 +13,7 @@ function Role() {
   const [isFetching, setIsFetching] = useState(true);
   const [data, setData] = useState({ rows: [], size: 10, page: 0 });
   const [selectedRole, setSelectedRole] = useState("");
+  const [selectedRow, setSelectedRow] = useState(null);
   const [key, setKey] = useState(0);
 
   const fetchRoles = useCallback(async (page = 0) => {
@@ -21,6 +24,21 @@ function Role() {
     }
   }, []);
 
+  const onDropRole = useCallback(async (role) => {
+    if (!window.confirm(`Do you want to delete role ${role}?`)) {
+      return;
+    }
+    const res = await deleteRequest(
+      `${API_ROUTES.ROLES.DROP.replace(":role", role)}`
+    );
+    if (!res.success) {
+      NotificationManager.error(res.message);
+    } else {
+      await fetchRoles();
+      NotificationManager.success(`${role} is deleted`);
+    }
+  });
+
   const onSelectRole = (e, priv) => {
     e.preventDefault();
     setSelectedRole(priv);
@@ -28,7 +46,30 @@ function Role() {
 
   const onClearRoleClick = useCallback(() => {
     setSelectedRole("");
-  });
+  }, []);
+
+  const onEditRowClick = useCallback((e, row) => {
+    e.preventDefault();
+    setSelectedRow(row);
+  }, []);
+
+  const onCloseEditModal = useCallback(() => {
+    setSelectedRow(null);
+  }, []);
+
+  const onEditRole = useCallback(async (role, hasPwd, pwd) => {
+    const res = await putRequest(
+      `${API_ROUTES.ROLES.DROP.replace(":role", role)}`,
+      { hasPwd, pwd }
+    );
+    if (!res.success) {
+      NotificationManager.error(res.message);
+    } else {
+      onCloseEditModal();
+      await fetchRoles();
+      NotificationManager.success(`${role} is deleted`);
+    }
+  }, []);
 
   useEffect(() => {
     fetchRoles();
@@ -55,25 +96,35 @@ function Role() {
       >
         <PrivByRole role={selectedRole} />
       </ReactModal>
+      <ReactModal
+        appElement={document.getElementById("root")}
+        isOpen={selectedRow !== null}
+        onRequestClose={onCloseEditModal}
+      >
+        <EditRole row={selectedRow || []} onEditRole={onEditRole} />
+      </ReactModal>
       <h1 className="text-4xl text-center">Roles</h1>
       <table className="table border-collapse w-full my-5">
         <thead>
           <tr>
             <th className="border">Roles</th>
+            <th className="border">Password required</th>
             <th className="border">User in this role</th>
             <th className="border">Privilege of this role</th>
+            <th className="border"></th>
           </tr>
         </thead>
         <tbody>
           {data.rows.map((row) => (
             <tr key={row}>
-              <td className="border">{row}</td>
+              <td className="border">{row[0]}</td>
+              <td className="border text-center">{row[1]}</td>
               <td className="border">
                 <a
                   href="#"
                   className="text-blue-500 hover:underline text-center block"
                   onClick={(e) => {
-                    onSelectRole(e, row);
+                    onSelectRole(e, row[0]);
                     setKey(1);
                   }}
                 >
@@ -85,11 +136,31 @@ function Role() {
                   href="#"
                   className="text-blue-500 hover:underline text-center block"
                   onClick={(e) => {
-                    onSelectRole(e, row);
+                    onSelectRole(e, row[0]);
                     setKey(2);
                   }}
                 >
                   View privileges
+                </a>
+              </td>
+              <td className="border">
+                <a
+                  href="#"
+                  className="text-blue-500 hover:underline text-center block"
+                  onClick={(e) => {
+                    onEditRowClick(e, row);
+                  }}
+                >
+                  Edit
+                </a>
+                <a
+                  href="#"
+                  className="text-red-500 hover:underline text-center block"
+                  onClick={(e) => {
+                    onDropRole(row[0]);
+                  }}
+                >
+                  Remove
                 </a>
               </td>
             </tr>
