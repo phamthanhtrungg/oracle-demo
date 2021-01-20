@@ -279,6 +279,34 @@ async function editRoleHandler(req, res, next) {
   }
 }
 
+async function createRoleHandler(req, res, next) {
+  const role = req.body.role;
+  const hasPwd = req.body.hasPwd !== undefined ? req.body.hasPwd : false;
+  const pwd = req.body.pwd ?? "";
+  if (!role) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide role" });
+  }
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+    let query = `CREATE ROLE ${role} NOT IDENTIFIED`;
+    if (hasPwd) {
+      query = `CREATE ROLE ${role} IDENTIFIED BY ${pwd}`;
+    }
+    await connection.execute(query);
+    return res.json({
+      success: true,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export {
   getPrivilegesHandler,
   getUsersByPriv,
@@ -288,4 +316,5 @@ export {
   getPrivsByRoleHandler,
   dropRoleHandler,
   editRoleHandler,
+  createRoleHandler,
 };

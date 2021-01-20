@@ -10,6 +10,7 @@ import {
   getPrivsByRoleHandler,
   dropRoleHandler,
   editRoleHandler,
+  createRoleHandler,
 } from "./handler";
 import { CustomErrorMiddleware } from "./middleware";
 
@@ -26,6 +27,7 @@ app.get("/api/privileges", getPrivilegesHandler);
 app.get("/api/privileges/:priv/users", getUsersByPriv);
 app.post("/api/privilege/revoke", revokePrivilegeHandler);
 app.get("/api/roles", getRolesHandler);
+app.post("/api/roles", createRoleHandler);
 app.put("/api/roles/:role", editRoleHandler);
 app.delete("/api/roles/:role", dropRoleHandler);
 app.get("/api/roles/:role/users", getUserByRoleHandler);

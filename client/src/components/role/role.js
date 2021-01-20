@@ -3,8 +3,15 @@
 import { useCallback, useState, useEffect } from "react";
 import ReactModal from "react-modal";
 import { NotificationManager } from "react-notifications";
-import { API_ROUTES, deleteRequest, getRequest, putRequest } from "../../api";
+import {
+  API_ROUTES,
+  deleteRequest,
+  getRequest,
+  postRequest,
+  putRequest,
+} from "../../api";
 import Pagination from "../pagination";
+import CreateRole from "./modal/CreateRole";
 import EditRole from "./modal/EditRole";
 import PrivByRole from "./modal/PrivByRole";
 import UserByRole from "./modal/UserByRole";
@@ -14,6 +21,7 @@ function Role() {
   const [data, setData] = useState({ rows: [], size: 10, page: 0 });
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
+  const [openCreateRole, setOpenCreateRole] = useState(false);
   const [key, setKey] = useState(0);
 
   const fetchRoles = useCallback(async (page = 0) => {
@@ -71,6 +79,21 @@ function Role() {
     }
   }, []);
 
+  const onCreateRole = useCallback(async (role, hasPwd, pwd) => {
+    const res = await postRequest(`${API_ROUTES.ROLES.ALL}`, {
+      role,
+      hasPwd,
+      pwd,
+    });
+    if (!res.success) {
+      NotificationManager.error(res.message);
+    } else {
+      setOpenCreateRole(false);
+      await fetchRoles();
+      NotificationManager.success(`${role} is created`);
+    }
+  }, []);
+
   useEffect(() => {
     fetchRoles();
   }, []);
@@ -103,7 +126,21 @@ function Role() {
       >
         <EditRole row={selectedRow || []} onEditRole={onEditRole} />
       </ReactModal>
+      <ReactModal
+        appElement={document.getElementById("root")}
+        isOpen={openCreateRole}
+        onRequestClose={() => setOpenCreateRole(false)}
+      >
+        <CreateRole onCreateRole={onCreateRole} />
+      </ReactModal>
       <h1 className="text-4xl text-center">Roles</h1>
+      <button
+        className="my-
+       p-3 bg-blue-500 text-white rounded"
+        onClick={() => setOpenCreateRole(true)}
+      >
+        Create role
+      </button>
       <table className="table border-collapse w-full my-5">
         <thead>
           <tr>
