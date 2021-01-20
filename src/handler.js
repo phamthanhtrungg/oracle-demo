@@ -307,6 +307,87 @@ async function createRoleHandler(req, res, next) {
   }
 }
 
+async function getProfileHandler(req, res, next) {
+  const page = req.query.page || 0;
+  const size = req.query.size || 10;
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+    const [profiles, counts] = await Promise.all([
+      connection.execute(
+        `
+      SELECT DISTINCT PROFILE
+      FROM DBA_PROFILES
+      ORDER BY PROFILE
+      OFFSET ${size * page} ROWS FETCH NEXT ${size} ROWS ONLY
+      `
+      ),
+      connection.execute(
+        "SELECT COUNT(DISTINCT PROFILE) COUNT FROM DBA_PROFILES"
+      ),
+    ]);
+
+    return res.json({
+      success: true,
+      data: {
+        rows: profiles.rows,
+        total: counts.rows > 0 ? counts.rows[0][0] : 0,
+        page,
+        size,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getResByProfileHandler(req, res, next) {
+  const page = req.query.page || 0;
+  const size = req.query.size || 10;
+  const profile = req.params.profile;
+  if (!profile) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide profile" });
+  }
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+    console.log(profile);
+    const [profiles, counts] = await Promise.all([
+      connection.execute(
+        `
+      SELECT RESOURCE_NAME, RESOURCE_TYPE, LIMIT 
+      FROM DBA_PROFILES
+      WHERE PROFILE = '${profile}'  
+      OFFSET ${size * page} ROWS FETCH NEXT ${size} ROWS ONLY
+      `
+      ),
+      connection.execute(
+        `SELECT COUNT(*) FROM DBA_PROFILES WHERE PROFILE = '${profile}'`
+      ),
+    ]);
+
+    return res.json({
+      success: true,
+      data: {
+        rows: profiles.rows,
+        total: counts.rows > 0 ? counts.rows[0][0] : 0,
+        page,
+        size,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export {
   getPrivilegesHandler,
   getUsersByPriv,
@@ -317,4 +398,6 @@ export {
   dropRoleHandler,
   editRoleHandler,
   createRoleHandler,
+  getProfileHandler,
+  getResByProfileHandler,
 };

@@ -154,7 +154,7 @@ function Role() {
         <tbody>
           {data.rows.map((row) => (
             <tr key={row}>
-              <td className="border">{row[0]}</td>
+              <td className="border text-center">{row[0]}</td>
               <td className="border text-center">{row[1]}</td>
               <td className="border">
                 <a

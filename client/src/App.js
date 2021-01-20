@@ -1,7 +1,8 @@
 import { NotificationContainer } from "react-notifications";
 import { Link, Route, Switch } from "react-router-dom";
 import Privilege from "./components/privilege";
-import Role from "./components/role/role";
+import Profile from "./components/profile";
+import Role from "./components/role";
 
 function App() {
   return (
@@ -20,7 +21,13 @@ function App() {
             className="text-blue-500 hover:underline text-xl mx-2"
           >
             Roles
-          </Link>{" "}
+          </Link>
+          <Link
+            to="/profiles"
+            className="text-blue-500 hover:underline text-xl mx-2"
+          >
+            Profiles
+          </Link>
         </div>
       </header>
       <Switch>
@@ -29,6 +36,9 @@ function App() {
         </Route>
         <Route path="/roles" exact>
           <Role />
+        </Route>
+        <Route path="/profiles" exact>
+          <Profile />
         </Route>
       </Switch>
       <NotificationContainer />

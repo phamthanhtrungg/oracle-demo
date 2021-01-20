@@ -19,6 +19,10 @@ const API_ROUTES = {
     PRIVS: "/roles/:role/privs",
     REVOKE: "/roles/revoke",
   },
+  PROFILES: {
+    ALL: "/profiles",
+    RES: "/profiles/:profile/res",
+  },
 };
 
 async function getRequest(targetUrl) {
