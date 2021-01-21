@@ -21,6 +21,7 @@ const API_ROUTES = {
   },
   PROFILES: {
     ALL: "/profiles",
+    DROP: "/profiles/:profile",
     RES: "/profiles/:profile/res",
   },
 };

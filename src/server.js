@@ -15,6 +15,7 @@ import {
   getResByProfileHandler,
   createProfileHandler,
   editResByProfileHandler,
+  dropProfileHandler,
 } from "./handler";
 import { CustomErrorMiddleware } from "./middleware";
 
@@ -40,6 +41,7 @@ app.get("/api/roles/:role/privs", getPrivsByRoleHandler);
 
 app.get("/api/profiles", getProfileHandler);
 app.post("/api/profiles", createProfileHandler);
+app.delete("/api/profiles/:profile", dropProfileHandler);
 app.get("/api/profiles/:profile/res", getResByProfileHandler);
 app.put("/api/profiles/:profile/res", editResByProfileHandler);
 

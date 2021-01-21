@@ -24,7 +24,7 @@ function Profile() {
   const [openCreateRole, setOpenCreateRole] = useState(false);
   const [key, setKey] = useState(0);
 
-  const fetchRoles = useCallback(async (page = 0) => {
+  const fetchProfiles = useCallback(async (page = 0) => {
     const res = await getRequest(`${API_ROUTES.PROFILES.ALL}?page=${page}`);
     if (res.success) {
       setData(res.data);
@@ -32,18 +32,18 @@ function Profile() {
     }
   }, []);
 
-  const onDropRole = useCallback(async (role) => {
-    if (!window.confirm(`Do you want to delete role ${role}?`)) {
+  const onDropProfile = useCallback(async (profile) => {
+    if (!window.confirm(`Do you want to delete profile ${profile}?`)) {
       return;
     }
     const res = await deleteRequest(
-      `${API_ROUTES.ROLES.DROP.replace(":role", role)}`
+      `${API_ROUTES.PROFILES.DROP.replace(":profile", profile)}`
     );
     if (!res.success) {
       NotificationManager.error(res.message);
     } else {
-      await fetchRoles();
-      NotificationManager.success(`${role} is deleted`);
+      await fetchProfiles();
+      NotificationManager.success(`${profile} is deleted`);
     }
   });
 
@@ -74,7 +74,7 @@ function Profile() {
       NotificationManager.error(res.message);
     } else {
       onCloseEditModal();
-      await fetchRoles();
+      await fetchProfiles();
       NotificationManager.success(`${profile} is updated`);
     }
   }, []);
@@ -87,13 +87,13 @@ function Profile() {
       NotificationManager.error(res.message);
     } else {
       setOpenCreateRole(false);
-      await fetchRoles();
+      await fetchProfiles();
       NotificationManager.success(`${profile} is created`);
     }
   }, []);
 
   useEffect(() => {
-    fetchRoles();
+    fetchProfiles();
   }, []);
 
   if (isFetching) {
@@ -190,7 +190,7 @@ function Profile() {
                   href="#"
                   className="text-red-500 hover:underline text-center block"
                   onClick={(e) => {
-                    onDropRole(row[0]);
+                    onDropProfile(row[0]);
                   }}
                 >
                   Remove
@@ -204,7 +204,7 @@ function Profile() {
         total={data.total}
         size={data.size}
         page={data.page}
-        onPageClick={fetchRoles}
+        onPageClick={fetchProfiles}
       />
     </>
   );
