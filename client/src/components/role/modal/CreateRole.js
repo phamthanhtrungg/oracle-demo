@@ -13,7 +13,7 @@ function CreateRole({ onCreateRole }) {
         <input
           placeholder="New role name"
           className="border ml-5 rounded px-5"
-          onChange={(e) => setRole(e.target.value)}
+          onChange={(e) => setRole(e.target.value.replace(/\s+/gim, "_"))}
           value={role}
         />
       </label>

@@ -79,18 +79,16 @@ function Profile() {
     }
   }, []);
 
-  const onCreateRole = useCallback(async (role, hasPwd, pwd) => {
-    const res = await postRequest(`${API_ROUTES.ROLES.ALL}`, {
-      role,
-      hasPwd,
-      pwd,
+  const onCreateProfile = useCallback(async (profile) => {
+    const res = await postRequest(`${API_ROUTES.PROFILES.ALL}`, {
+      profile,
     });
     if (!res.success) {
       NotificationManager.error(res.message);
     } else {
       setOpenCreateRole(false);
       await fetchRoles();
-      NotificationManager.success(`${role} is created`);
+      NotificationManager.success(`${profile} is created`);
     }
   }, []);
 
@@ -131,7 +129,7 @@ function Profile() {
         isOpen={openCreateRole}
         onRequestClose={() => setOpenCreateRole(false)}
       >
-        <CreateRole onCreateRole={onCreateRole} />
+        <CreateRole onCreateProfile={onCreateProfile} />
       </ReactModal>
       <h1 className="text-4xl text-center">Profiles</h1>
       <button

@@ -388,6 +388,33 @@ async function getResByProfileHandler(req, res, next) {
   }
 }
 
+async function createProfileHandler(req, res, next) {
+  const profile = req.body.profile;
+  if (!profile) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide profile" });
+  }
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+    await connection.execute(
+      `
+        CREATE PROFILE ${profile} LIMIT
+      `
+    );
+
+    return res.json({
+      success: true,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export {
   getPrivilegesHandler,
   getUsersByPriv,
@@ -400,4 +427,5 @@ export {
   createRoleHandler,
   getProfileHandler,
   getResByProfileHandler,
+  createProfileHandler,
 };
