@@ -11,10 +11,10 @@ import {
   putRequest,
 } from "../../api";
 import Pagination from "../pagination";
-import CreateRole from "./modal/CreateRole";
-import EditRole from "./modal/EditRole";
-import ResourceByProfile from "./modal/PrivByRole";
-import UserByRole from "./modal/UserByRole";
+import CreateProfile from "./modal/CreateProfile";
+import EditProfile from "./modal/EditProfile";
+import ResourceByProfile from "./modal/ResourceByProfile";
+import UserByRole from "./modal/UserByProfile";
 
 function Profile() {
   const [isFetching, setIsFetching] = useState(true);
@@ -122,14 +122,14 @@ function Profile() {
         isOpen={selectedRow !== null}
         onRequestClose={onCloseEditModal}
       >
-        <EditRole row={selectedRow || []} onEditRole={onEditRole} />
+        <EditProfile row={selectedRow || []} onEditRole={onEditRole} />
       </ReactModal>
       <ReactModal
         appElement={document.getElementById("root")}
         isOpen={openCreateRole}
         onRequestClose={() => setOpenCreateRole(false)}
       >
-        <CreateRole onCreateProfile={onCreateProfile} />
+        <CreateProfile onCreateProfile={onCreateProfile} />
       </ReactModal>
       <h1 className="text-4xl text-center">Profiles</h1>
       <button
