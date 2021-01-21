@@ -14,7 +14,7 @@ import Pagination from "../pagination";
 import CreateProfile from "./modal/CreateProfile";
 import EditProfile from "./modal/EditProfile";
 import ResourceByProfile from "./modal/ResourceByProfile";
-import UserByRole from "./modal/UserByProfile";
+import UserByProfile from "./modal/UserByProfile";
 
 function Profile() {
   const [isFetching, setIsFetching] = useState(true);
@@ -108,7 +108,7 @@ function Profile() {
         isOpen={selectedProfile !== "" && key === 1}
         onRequestClose={onClearRoleClick}
       >
-        <UserByRole role={selectedProfile} />
+        <UserByProfile profile={selectedProfile} />
       </ReactModal>
       <ReactModal
         appElement={document.getElementById("root")}

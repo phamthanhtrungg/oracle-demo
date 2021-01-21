@@ -471,6 +471,68 @@ async function dropProfileHandler(req, res, next) {
   }
 }
 
+async function getUserByProfileHandler(req, res, next) {
+  const page = req.query.page || 0;
+  const size = req.query.size || 10;
+  const profile = req.params.profile;
+  if (!profile) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide profile" });
+  }
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+    const users = await connection.execute(
+      `
+      SELECT USERNAME, COUNT
+      FROM DBA_USERS, (SELECT COUNT(*) as COUNT FROM DBA_USERS WHERE PROFILE = '${profile}') 
+      WHERE PROFILE = '${profile}'
+      OFFSET ${size * page} ROWS FETCH NEXT ${size} ROWS ONLY
+       `
+    );
+
+    return res.json({
+      success: true,
+      data: {
+        rows: users.rows,
+        total: users.rows > 0 ? users.rows[0][0] : 0,
+        page,
+        size,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function revokeProfileHandler(req, res, next) {
+  const username = req.body.username;
+
+  if (!username) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide username" });
+  }
+
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+    await connection.execute(`ALTER USER ${username} PROFILE DEFAULT`);
+    return res.json({
+      success: true,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export {
   getPrivilegesHandler,
   getUsersByPriv,
@@ -486,4 +548,6 @@ export {
   createProfileHandler,
   editResByProfileHandler,
   dropProfileHandler,
+  getUserByProfileHandler,
+  revokeProfileHandler,
 };

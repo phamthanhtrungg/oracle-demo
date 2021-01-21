@@ -4,12 +4,11 @@ import { NotificationManager } from "react-notifications";
 import { API_ROUTES, getRequest, postRequest } from "../../../api";
 import Pagination from "../../pagination";
 
-function Row({ role, username, fetchUserByRole }) {
+function Row({ profile, username, fetchUserByRole }) {
   const [revoking, setRevoking] = useState(false);
   const onRevokeClick = useCallback(async () => {
     setRevoking(true);
-    const res = await postRequest(API_ROUTES.PRIVILEGES.REVOKE, {
-      priv: role,
+    const res = await postRequest(API_ROUTES.PROFILES.REVOKE, {
       username,
     });
     if (!res.success) {
@@ -33,15 +32,15 @@ function Row({ role, username, fetchUserByRole }) {
   );
 }
 
-function UserByRole({ role }) {
+function UserByRole({ profile }) {
   const [data, setData] = useState({ rows: [], page: 0, size: 10, total: 0 });
   const [isFetching, setIsFetching] = useState(false);
   const fetchUserByRole = useCallback(
     async (page = 0) => {
-      if (!role) return;
+      if (!profile) return;
       setIsFetching(true);
       const res = await getRequest(
-        `${API_ROUTES.ROLES.USERS.replace(":role", role)}?page=${page}`
+        `${API_ROUTES.PROFILES.USERS.replace(":profile", profile)}?page=${page}`
       );
       if (res.success) {
         setIsFetching(false);
@@ -49,7 +48,7 @@ function UserByRole({ role }) {
       }
       setIsFetching(false);
     },
-    [role]
+    [profile]
   );
 
   useEffect(() => {
@@ -72,12 +71,12 @@ function UserByRole({ role }) {
             <Row
               key={row[0]}
               username={row[0]}
-              role={role}
+              profile={profile}
               fetchUserByRole={fetchUserByRole}
             />
           ))
         ) : (
-          <p className="text-xl center">No users in this role</p>
+          <p className="text-xl center">No users in this profile</p>
         )}
       </ul>
       <Pagination

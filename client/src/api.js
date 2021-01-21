@@ -23,6 +23,8 @@ const API_ROUTES = {
     ALL: "/profiles",
     DROP: "/profiles/:profile",
     RES: "/profiles/:profile/res",
+    USERS: "/profiles/:profile/users",
+    REVOKE: "/profiles/revoke",
   },
 };
 
