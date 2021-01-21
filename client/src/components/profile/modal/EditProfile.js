@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { API_ROUTES, getRequest } from "../../../api";
 
-function EditProfile({ row = [], onEditRole }) {
+function EditProfile({ row = [], onEditProfile }) {
   const profile = row[0];
   const [data, setData] = useState({ rows: [], page: 0, size: 10, total: 0 });
   const [isFetching, setIsFetching] = useState(false);
@@ -59,7 +59,7 @@ function EditProfile({ row = [], onEditRole }) {
                     }
                   }
                 }
-                console.log(row);
+
                 setRes({
                   name: row[0],
                   value: row[2],
@@ -84,7 +84,7 @@ function EditProfile({ row = [], onEditRole }) {
                 onChange={(e) => {
                   setRes((prev) => ({
                     ...prev,
-                    name: e.target.value,
+                    value: e.target.value,
                   }));
                 }}
               />
@@ -139,7 +139,9 @@ function EditProfile({ row = [], onEditRole }) {
       <button
         className="mx-auto block p-3 bg-green-500 text-white rounded"
         // disabled={hasPwd === true && !pwd}
-        // onClick={() => onEditRole(profileName, hasPwd, pwd)}
+        onClick={() =>
+          onEditProfile(profile, res.name, res.value, res.numValue)
+        }
       >
         Update
       </button>

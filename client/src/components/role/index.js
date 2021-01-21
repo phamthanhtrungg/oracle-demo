@@ -75,7 +75,7 @@ function Role() {
     } else {
       onCloseEditModal();
       await fetchRoles();
-      NotificationManager.success(`${role} is deleted`);
+      NotificationManager.success(`${role} is updated`);
     }
   }, []);
 

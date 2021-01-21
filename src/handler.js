@@ -388,6 +388,39 @@ async function getResByProfileHandler(req, res, next) {
   }
 }
 
+async function editResByProfileHandler(req, res, next) {
+  const profile = req.params.profile;
+  if (!profile) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide profile" });
+  }
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+    let query = "";
+    if (req.body.value !== "UNLIMITED" && req.body.value !== "DEFAULT") {
+      query = `${req.body.name} ${req.body.numValue}`;
+    } else {
+      query = `${req.body.name} ${req.body.value}`;
+    }
+    await connection.execute(
+      `
+     ALTER PROFILE ${profile} LIMIT ${query}
+      `
+    );
+
+    return res.json({
+      success: true,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function createProfileHandler(req, res, next) {
   const profile = req.body.profile;
   if (!profile) {
@@ -428,4 +461,5 @@ export {
   getProfileHandler,
   getResByProfileHandler,
   createProfileHandler,
+  editResByProfileHandler,
 };

@@ -65,17 +65,17 @@ function Profile() {
     setSelectedRow(null);
   }, []);
 
-  const onEditRole = useCallback(async (role, hasPwd, pwd) => {
+  const onEditProfile = useCallback(async (profile, name, value, numValue) => {
     const res = await putRequest(
-      `${API_ROUTES.ROLES.DROP.replace(":role", role)}`,
-      { hasPwd, pwd }
+      `${API_ROUTES.PROFILES.RES.replace(":profile", profile)}`,
+      { name, value, numValue }
     );
     if (!res.success) {
       NotificationManager.error(res.message);
     } else {
       onCloseEditModal();
       await fetchRoles();
-      NotificationManager.success(`${role} is deleted`);
+      NotificationManager.success(`${profile} is updated`);
     }
   }, []);
 
@@ -115,14 +115,14 @@ function Profile() {
         isOpen={selectedProfile !== "" && key === 2}
         onRequestClose={onClearRoleClick}
       >
-        <ResourceByProfile profile={selectedProfile} />
+        <ResourceByProfile profile={selectedProfile} onE />
       </ReactModal>
       <ReactModal
         appElement={document.getElementById("root")}
         isOpen={selectedRow !== null}
         onRequestClose={onCloseEditModal}
       >
-        <EditProfile row={selectedRow || []} onEditRole={onEditRole} />
+        <EditProfile row={selectedRow || []} onEditProfile={onEditProfile} />
       </ReactModal>
       <ReactModal
         appElement={document.getElementById("root")}
