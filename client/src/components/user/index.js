@@ -14,7 +14,7 @@ import Pagination from "../pagination";
 import CreateRole from "./modal/CreateRole";
 import EditRole from "./modal/EditRole";
 import PrivByRole from "./modal/PrivByRole";
-import UserByRole from "./modal/UserByRole";
+import RoleByUser from "./modal/RoleByUser";
 
 function Role() {
   const [isFetching, setIsFetching] = useState(true);
@@ -32,18 +32,18 @@ function Role() {
     }
   }, []);
 
-  const onDropRole = useCallback(async (role) => {
-    if (!window.confirm(`Do you want to delete role ${role}?`)) {
+  const onDropUser = useCallback(async (user) => {
+    if (!window.confirm(`Do you want to delete user ${user}?`)) {
       return;
     }
     const res = await deleteRequest(
-      `${API_ROUTES.ROLES.DROP.replace(":role", role)}`
+      `${API_ROUTES.USERS.DROP.replace(":user", user)}`
     );
     if (!res.success) {
       NotificationManager.error(res.message);
     } else {
       await fetchRoles();
-      NotificationManager.success(`${role} is deleted`);
+      NotificationManager.success(`${user} is deleted`);
     }
   });
 
@@ -110,7 +110,7 @@ function Role() {
         isOpen={selectedRole !== "" && key === 1}
         onRequestClose={onClearRoleClick}
       >
-        <UserByRole role={selectedRole} />
+        <RoleByUser role={selectedRole} />
       </ReactModal>
       <ReactModal
         appElement={document.getElementById("root")}
@@ -150,7 +150,7 @@ function Role() {
             <th className="border">Created</th>
             <th className="border">Default table space</th>
             <th className="border">Temporary table space</th>
-            <th className="border">profile</th>
+            <th className="border">Profile</th>
             <th className="border">Roles</th>
             <th className="border">Privileges</th>
 
@@ -209,7 +209,7 @@ function Role() {
                   href="#"
                   className="text-red-500 hover:underline text-center block"
                   onClick={(e) => {
-                    onDropRole(row[0]);
+                    onDropUser(row[0]);
                   }}
                 >
                   Remove

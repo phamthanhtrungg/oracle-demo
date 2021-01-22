@@ -28,9 +28,9 @@ const API_ROUTES = {
   },
   USERS: {
     ALL: "/users",
-    DROP: "/users/:profile",
-    RES: "/users/:profile/res",
-    USERS: "/users/:profile/users",
+    DROP: "/users/:user",
+    ROLE: "/users/:user/roles",
+    PRIVS: "/users/:user/privs",
     REVOKE: "/users/revoke",
   },
 };

@@ -19,6 +19,8 @@ import {
   getUserByProfileHandler,
   revokeProfileHandler,
   getUsersHandler,
+  dropUserHandler,
+  getRoleByUserHandler,
 } from "./handler";
 import { CustomErrorMiddleware } from "./middleware";
 
@@ -51,6 +53,13 @@ app.put("/api/profiles/:profile/res", editResByProfileHandler);
 app.get("/api/profiles/:profile/users", getUserByProfileHandler);
 
 app.get("/api/users", getUsersHandler);
+app.get("/api/users", getProfileHandler);
+app.post("/api/users", createProfileHandler);
+app.post("/api/users/revoke", revokeProfileHandler);
+app.delete("/api/users/:user", dropUserHandler);
+app.get("/api/users/:user/roles", getRoleByUserHandler);
+app.put("/api/users/:user/res", editResByProfileHandler);
+app.get("/api/users/:user/privs", getUserByProfileHandler);
 
 app.use(CustomErrorMiddleware);
 

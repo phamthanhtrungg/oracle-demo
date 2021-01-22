@@ -41,7 +41,7 @@ function UserByRole({ role }) {
       if (!role) return;
       setIsFetching(true);
       const res = await getRequest(
-        `${API_ROUTES.ROLES.USERS.replace(":role", role)}?page=${page}`
+        `${API_ROUTES.USERS.ROLE.replace(":user", role)}?page=${page}`
       );
       if (res.success) {
         setIsFetching(false);

@@ -359,7 +359,7 @@ async function getResByProfileHandler(req, res, next) {
       password: "admin",
       connectString: "localhost/orcl",
     });
-    console.log(profile);
+
     const [profiles, counts] = await Promise.all([
       connection.execute(
         `
@@ -461,7 +461,7 @@ async function dropProfileHandler(req, res, next) {
       password: "admin",
       connectString: "localhost/orcl",
     });
-    await connection.execute(`DROP PROFILE ${profile} `);
+    await connection.execute(`DROP PROFILE ${profile} CASCADE`);
 
     return res.json({
       success: true,
@@ -569,6 +569,73 @@ async function getUsersHandler(req, res, next) {
   }
 }
 
+async function dropUserHandler(req, res, next) {
+  const user = req.params.user;
+  if (!user) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide user" });
+  }
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+    await connection.execute(`DROP USER ${user} CASCADE`);
+
+    return res.json({
+      success: true,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getRoleByUserHandler(req, res, next) {
+  const page = req.query.page || 0;
+  const size = req.query.size || 10;
+  const user = req.params.user;
+  if (!user) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide user" });
+  }
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+
+    const [users, counts] = await Promise.all([
+      connection.execute(
+        `
+      SELECT GRANTED_ROLE
+      FROM USER_ROLE_PRIVS
+      WHERE USERNAME = '${user}' 
+      OFFSET ${size * page} ROWS FETCH NEXT ${size} ROWS ONLY
+      `
+      ),
+      connection.execute(
+        `SELECT COUNT(*) FROM USER_ROLE_PRIVS WHERE USERNAME = '${user}'`
+      ),
+    ]);
+
+    return res.json({
+      success: true,
+      data: {
+        rows: users.rows,
+        total: counts.rows > 0 ? counts.rows[0][0] : 0,
+        page,
+        size,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export {
   getPrivilegesHandler,
   getUsersByPriv,
@@ -587,4 +654,6 @@ export {
   getUserByProfileHandler,
   revokeProfileHandler,
   getUsersHandler,
+  dropUserHandler,
+  getRoleByUserHandler,
 };
