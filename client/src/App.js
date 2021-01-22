@@ -3,6 +3,7 @@ import { Link, Route, Switch } from "react-router-dom";
 import Privilege from "./components/privilege";
 import Profile from "./components/profile";
 import Role from "./components/role";
+import User from "./components/user";
 
 function App() {
   return (
@@ -28,6 +29,12 @@ function App() {
           >
             Profiles
           </Link>
+          <Link
+            to="/users"
+            className="text-blue-500 hover:underline text-xl mx-2"
+          >
+            Users
+          </Link>
         </div>
       </header>
       <Switch>
@@ -39,6 +46,9 @@ function App() {
         </Route>
         <Route path="/profiles" exact>
           <Profile />
+        </Route>
+        <Route path="/users" exact>
+          <User />
         </Route>
       </Switch>
       <NotificationContainer />

@@ -26,6 +26,13 @@ const API_ROUTES = {
     USERS: "/profiles/:profile/users",
     REVOKE: "/profiles/revoke",
   },
+  USERS: {
+    ALL: "/users",
+    DROP: "/users/:profile",
+    RES: "/users/:profile/res",
+    USERS: "/users/:profile/users",
+    REVOKE: "/users/revoke",
+  },
 };
 
 async function getRequest(targetUrl) {

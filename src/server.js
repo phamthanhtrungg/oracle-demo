@@ -18,6 +18,7 @@ import {
   dropProfileHandler,
   getUserByProfileHandler,
   revokeProfileHandler,
+  getUsersHandler,
 } from "./handler";
 import { CustomErrorMiddleware } from "./middleware";
 
@@ -48,6 +49,8 @@ app.delete("/api/profiles/:profile", dropProfileHandler);
 app.get("/api/profiles/:profile/res", getResByProfileHandler);
 app.put("/api/profiles/:profile/res", editResByProfileHandler);
 app.get("/api/profiles/:profile/users", getUserByProfileHandler);
+
+app.get("/api/users", getUsersHandler);
 
 app.use(CustomErrorMiddleware);
 
