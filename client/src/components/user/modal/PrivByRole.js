@@ -41,7 +41,7 @@ function PrivByRole({ role }) {
       if (!role) return;
       setIsFetching(true);
       const res = await getRequest(
-        `${API_ROUTES.ROLES.PRIVS.replace(":role", role)}?page=${page}`
+        `${API_ROUTES.USERS.PRIVS.replace(":user", role)}?page=${page}`
       );
       if (res.success) {
         setIsFetching(false);
@@ -66,20 +66,26 @@ function PrivByRole({ role }) {
   return (
     <>
       <h2 className="text-2xl text-center">Privileges</h2>
-      <ul>
-        {data.rows.length > 0 ? (
-          data.rows.map((row) => (
-            <Row
-              key={row[0]}
-              username={row[0]}
-              role={role}
-              fetchPrivByRole={fetchPrivByRole}
-            />
-          ))
-        ) : (
-          <p className="text-xl center">No privileges in this role</p>
-        )}
-      </ul>
+      {data.rows.length > 0 ? (
+        <table className="table-auto w-full border-collapse my-3">
+          <thead>
+            <tr>
+              <th className="border">Privilege</th>
+              <th className="border">Can assign other this privilege</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.rows.map((row) => (
+              <tr>
+                <td className="border">{row[0]}</td>
+                <td className="border text-center">{row[1]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p className="text-xl text-center">No privileges in this users</p>
+      )}
       <Pagination
         total={data.total}
         page={data.page}

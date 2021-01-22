@@ -608,7 +608,7 @@ async function getRoleByUserHandler(req, res, next) {
       connectString: "localhost/orcl",
     });
 
-    const [users, counts] = await Promise.all([
+    const [roles, counts] = await Promise.all([
       connection.execute(
         `
       SELECT GRANTED_ROLE, ADMIN_OPTION
@@ -625,7 +625,51 @@ async function getRoleByUserHandler(req, res, next) {
     return res.json({
       success: true,
       data: {
-        rows: users.rows,
+        rows: roles.rows,
+        total: counts.rows > 0 ? counts.rows[0][0] : 0,
+        page,
+        size,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function gePrivByUserHandler(req, res, next) {
+  const page = req.query.page || 0;
+  const size = req.query.size || 10;
+  const user = req.params.user;
+  if (!user) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide user" });
+  }
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+
+    const [privileges, counts] = await Promise.all([
+      connection.execute(
+        `
+      SELECT PRIVILEGE, ADMIN_OPTION
+      FROM dba_sys_privs 
+      WHERE GRANTEE = '${user}' 
+      OFFSET ${size * page} ROWS FETCH NEXT ${size} ROWS ONLY
+      `
+      ),
+      connection.execute(
+        `SELECT COUNT(*) FROM dba_sys_privs  WHERE GRANTEE = '${user}'`
+      ),
+    ]);
+
+    return res.json({
+      success: true,
+      data: {
+        rows: privileges.rows,
         total: counts.rows > 0 ? counts.rows[0][0] : 0,
         page,
         size,
@@ -656,4 +700,5 @@ export {
   getUsersHandler,
   dropUserHandler,
   getRoleByUserHandler,
+  gePrivByUserHandler,
 };
