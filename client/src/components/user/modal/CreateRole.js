@@ -1,72 +1,132 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { API_ROUTES, getRequest } from "../../../api";
 
-function CreateRole({ onCreateRole }) {
-  const [hasPwd, sethasPwd] = useState(false);
-  const [pwd, setPwd] = useState("");
-  const [role, setRole] = useState("");
+function CreateRole({ onCreateUser }) {
+  const [data, setData] = useState({ rows: [] });
+  const [rols, setRols] = useState({ rows: [] });
+  const [profiles, setProfiles] = useState({ rows: [] });
+  const { register, handleSubmit } = useForm();
+  const onSubmit = (data) => {
+    onCreateUser(data);
+  };
+  const fetchTableSpaces = async () => {
+    const res = await getRequest(API_ROUTES.TABLE_SPACES);
+    setData(res.data);
+  };
+  const fetchRoles = async () => {
+    const res = await getRequest(API_ROUTES.ALL_ROLE);
+    setRols(res.data);
+  };
+  const fetchProfiles = async () => {
+    const res = await getRequest(API_ROUTES.ALL_PROFILES);
+    setProfiles(res.data);
+  };
+
+  useEffect(() => {
+    fetchTableSpaces();
+    fetchRoles();
+    fetchProfiles();
+  }, []);
 
   return (
     <>
-      <h2 className="text-2xl text-center">Create new role</h2>
-      <label className="my-3 block">
-        New role name
+      <h2 className="text-2xl text-center">Create new user</h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="w-1/2 mx-auto">
         <input
-          placeholder="New role name"
-          className="border ml-5 rounded px-5"
-          onChange={(e) => setRole(e.target.value.replace(/\s+/gim, "_"))}
-          value={role}
+          name="USERNAME"
+          required
+          ref={register}
+          placeholder="Username"
+          className="border p-2 rounded block my-2"
         />
-      </label>
-      <label>
-        <span>
-          Does this role has password?
-          <span className="ml-5">
-            <label className="mr-5">
-              No
-              <input
-                type="radio"
-                checked={hasPwd === false}
-                name="hasPwd"
-                value="NO"
-                onChange={() => {
-                  sethasPwd(false);
-                  setPwd("");
-                }}
-              />
-            </label>
-            <label>
-              Yes
-              <input
-                type="radio"
-                checked={hasPwd === true}
-                name="hasPwd"
-                value="YES"
-                onChange={() => {
-                  sethasPwd(true);
-                }}
-              />
-            </label>
-          </span>
-        </span>
-      </label>
-      {hasPwd && (
-        <label className="block mt-3">
-          Enter new password?
-          <input
-            type="password"
-            placeholder="Enter new password"
-            className="border ml-5 rounded px-5"
-            onChange={(e) => setPwd(e.target.value)}
-          />
+        <input
+          name="PASSWORD"
+          type="password"
+          required
+          ref={register}
+          placeholder="Password"
+          className="border p-2 rounded block my-2"
+        />
+        <input
+          name="QUOTA"
+          type="text"
+          required
+          ref={register}
+          placeholder="Quota"
+          className="border p-2 rounded block my-2"
+        />
+        <label>
+          Profile:{" "}
+          <select
+            name="PROFILE"
+            ref={register}
+            required
+            className="border p-2 rounded block my-2"
+          >
+            {profiles.rows.map((row) => (
+              <option value={row}>{row}</option>
+            ))}
+          </select>
+        </label>{" "}
+        <label>
+          Role:{" "}
+          <select
+            name="ROLE"
+            ref={register}
+            required
+            className="border p-2 rounded block my-2"
+          >
+            {rols.rows.map((row) => (
+              <option value={row}>{row}</option>
+            ))}
+          </select>
+        </label>{" "}
+        <label>
+          Account status:{" "}
+          <select
+            name="ACCOUNT_STATUS"
+            ref={register}
+            required
+            className="border p-2 rounded block my-2"
+          >
+            <option value="LOCK">LOCK</option>
+            <option value="UNLOCK">UNLOCK</option>
+          </select>
         </label>
-      )}
-      <button
-        className="mx-auto block p-3 bg-green-500 text-white rounded"
-        disabled={(hasPwd === true && !pwd) || !role}
-        onClick={() => onCreateRole(role, hasPwd, pwd)}
-      >
-        Create
-      </button>
+        <label>
+          Default table space:{" "}
+          <select
+            name="DEFAULT_TABLESPACE"
+            ref={register}
+            required
+            className="border p-2 rounded block my-2"
+          >
+            {data.rows.map((row) => (
+              <option value={row}>{row}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Temporary table space:{" "}
+          <select
+            name="TEMPORARY_TABLESPACE"
+            ref={register}
+            required
+            className="border p-2 rounded block my-2"
+          >
+            {data.rows.map((row) => (
+              <option value={row}>{row}</option>
+            ))}
+          </select>
+        </label>
+        <button
+          className="mx-auto block p-3 bg-green-500 text-white rounded"
+          type="submit"
+        >
+          Create
+        </button>
+      </form>
     </>
   );
 }

@@ -22,6 +22,10 @@ import {
   dropUserHandler,
   getRoleByUserHandler,
   gePrivByUserHandler,
+  getTableSpaceHandler,
+  getAllRolesHandler,
+  getAllProfileHandler,
+  createUserHandler,
 } from "./handler";
 import { CustomErrorMiddleware } from "./middleware";
 
@@ -54,10 +58,13 @@ app.put("/api/profiles/:profile/res", editResByProfileHandler);
 app.get("/api/profiles/:profile/users", getUserByProfileHandler);
 
 app.get("/api/users", getUsersHandler);
-app.post("/api/users", createProfileHandler);
+app.post("/api/users", createUserHandler);
 app.delete("/api/users/:user", dropUserHandler);
 app.get("/api/users/:user/roles", getRoleByUserHandler);
 app.get("/api/users/:user/privs", gePrivByUserHandler);
+app.get("/api/tablespaces", getTableSpaceHandler);
+app.get("/api/all_roles", getAllRolesHandler);
+app.get("/api/all_profiles", getAllProfileHandler);
 
 app.use(CustomErrorMiddleware);
 

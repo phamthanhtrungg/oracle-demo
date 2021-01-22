@@ -33,6 +33,9 @@ const API_ROUTES = {
     PRIVS: "/users/:user/privs",
     REVOKE: "/users/revoke",
   },
+  TABLE_SPACES: "/tablespaces",
+  ALL_ROLE: "/all_roles",
+  ALL_PROFILES: "/all_profiles",
 };
 
 async function getRequest(targetUrl) {

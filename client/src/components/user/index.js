@@ -47,7 +47,7 @@ function Role() {
     }
   });
 
-  const onSelectRole = (e, priv) => {
+  const onSelectUser = (e, priv) => {
     e.preventDefault();
     setSelectedRole(priv);
   };
@@ -65,7 +65,7 @@ function Role() {
     setSelectedRow(null);
   }, []);
 
-  const onEditRole = useCallback(async (role, hasPwd, pwd) => {
+  const onEditUser = useCallback(async (role, hasPwd, pwd) => {
     const res = await putRequest(
       `${API_ROUTES.ROLES.DROP.replace(":role", role)}`,
       { hasPwd, pwd }
@@ -79,18 +79,20 @@ function Role() {
     }
   }, []);
 
-  const onCreateRole = useCallback(async (role, hasPwd, pwd) => {
-    const res = await postRequest(`${API_ROUTES.ROLES.ALL}`, {
-      role,
-      hasPwd,
-      pwd,
+  const onCreateUser = useCallback(async (data) => {
+    console.log(data);
+    const query1 = `CREATE USER ${data.USERNAME} IDENTIFIED BY ${data.PASSWORD} DEFAULT TABLESPACE ${data.DEFAULT_TABLESPACE} QUOTA  ${data.QUOTA} ON ${data.DEFAULT_TABLESPACE} PROFILE ${data.PROFILE} TEMPORARY TABLESPACE ${data.TEMPORARY_TABLESPACE} ACCOUNT  ${data.ACCOUNT_STATUS}`;
+    const query2 = `GRANT ${data.ROLE} to ${data.USERNAME}`;
+    const res = await postRequest(`${API_ROUTES.USERS.ALL}`, {
+      query1,
+      query2,
     });
     if (!res.success) {
       NotificationManager.error(res.message);
     } else {
       setOpenCreateRole(false);
       await fetchRoles();
-      NotificationManager.success(`${role} is created`);
+      NotificationManager.success(`${data.USERNAME} is created`);
     }
   }, []);
 
@@ -124,14 +126,14 @@ function Role() {
         isOpen={selectedRow !== null}
         onRequestClose={onCloseEditModal}
       >
-        <EditRole row={selectedRow || []} onEditRole={onEditRole} />
+        <EditRole row={selectedRow || []} onEditUser={onEditUser} />
       </ReactModal>
       <ReactModal
         appElement={document.getElementById("root")}
         isOpen={openCreateRole}
         onRequestClose={() => setOpenCreateRole(false)}
       >
-        <CreateRole onCreateRole={onCreateRole} />
+        <CreateRole onCreateUser={onCreateUser} />
       </ReactModal>
       <h1 className="text-4xl text-center">Users</h1>
       <button
@@ -176,7 +178,7 @@ function Role() {
                   href="#"
                   className="text-blue-500 hover:underline text-center block"
                   onClick={(e) => {
-                    onSelectRole(e, row[0]);
+                    onSelectUser(e, row[0]);
                     setKey(1);
                   }}
                 >
@@ -188,7 +190,7 @@ function Role() {
                   href="#"
                   className="text-blue-500 hover:underline text-center block"
                   onClick={(e) => {
-                    onSelectRole(e, row[0]);
+                    onSelectUser(e, row[0]);
                     setKey(2);
                   }}
                 >

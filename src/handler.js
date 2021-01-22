@@ -547,6 +547,7 @@ async function getUsersHandler(req, res, next) {
         `
       SELECT USERNAME, ACCOUNT_STATUS, LOCK_DATE, CREATED, DEFAULT_TABLESPACE, TEMPORARY_TABLESPACE, PROFILE
       FROM DBA_USERS
+      ORDER BY USERNAME
       OFFSET ${size * page} ROWS FETCH NEXT ${size} ROWS ONLY
       `
       ),
@@ -680,6 +681,97 @@ async function gePrivByUserHandler(req, res, next) {
   }
 }
 
+async function getTableSpaceHandler(req, res, next) {
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+
+    const tableSpaces = await connection.execute(
+      `
+      SELECT TABLESPACE_NAME
+      FROM USER_TABLESPACES
+      `
+    );
+    return res.json({
+      success: true,
+      data: {
+        rows: tableSpaces.rows,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getAllRolesHandler(req, res, next) {
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+
+    const tableSpaces = await connection.execute(
+      `
+      SELECT ROLE FROM DBA_ROLES
+      `
+    );
+    return res.json({
+      success: true,
+      data: {
+        rows: tableSpaces.rows,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getAllProfileHandler(req, res, next) {
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+
+    const tableSpaces = await connection.execute(
+      `
+      SELECT DISTINCT PROFILE FROM DBA_PROFILES
+      `
+    );
+    return res.json({
+      success: true,
+      data: {
+        rows: tableSpaces.rows,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+async function createUserHandler(req, res, next) {
+  const { query1, query2 } = req.body;
+  try {
+    connection = await oracledb.getConnection({
+      user: "admin",
+      password: "admin",
+      connectString: "localhost/orcl",
+    });
+    await connection.execute(query1);
+    await connection.execute(query2);
+
+    return res.json({
+      success: true,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export {
   getPrivilegesHandler,
   getUsersByPriv,
@@ -701,4 +793,8 @@ export {
   dropUserHandler,
   getRoleByUserHandler,
   gePrivByUserHandler,
+  getTableSpaceHandler,
+  getAllRolesHandler,
+  getAllProfileHandler,
+  createUserHandler,
 };
