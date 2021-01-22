@@ -611,7 +611,7 @@ async function getRoleByUserHandler(req, res, next) {
     const [users, counts] = await Promise.all([
       connection.execute(
         `
-      SELECT GRANTED_ROLE
+      SELECT GRANTED_ROLE, ADMIN_OPTION
       FROM USER_ROLE_PRIVS
       WHERE USERNAME = '${user}' 
       OFFSET ${size * page} ROWS FETCH NEXT ${size} ROWS ONLY

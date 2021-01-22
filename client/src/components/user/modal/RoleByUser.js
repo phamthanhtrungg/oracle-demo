@@ -65,21 +65,27 @@ function UserByRole({ role }) {
 
   return (
     <>
-      <h2 className="text-2xl text-center">Users</h2>
-      <ul>
-        {data.rows.length > 0 ? (
-          data.rows.map((row) => (
-            <Row
-              key={row[0]}
-              username={row[0]}
-              role={role}
-              fetchUserByRole={fetchUserByRole}
-            />
-          ))
-        ) : (
-          <p className="text-xl center">No users in this role</p>
-        )}
-      </ul>
+      <h2 className="text-2xl text-center">Roles</h2>
+      {data.rows.length > 0 ? (
+        <table className="table-auto w-full border-collapse my-3">
+          <thead>
+            <tr>
+              <th className="border">Role</th>
+              <th className="border">Can assign other this role</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.rows.map((row) => (
+              <tr>
+                <td className="border">{row[0]}</td>
+                <td className="border text-center">{row[1]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p className="text-xl text-center">No roles in this users</p>
+      )}
       <Pagination
         total={data.total}
         page={data.page}
